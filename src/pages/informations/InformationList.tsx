@@ -1,0 +1,189 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getPages, deletePage } from "../../services/informationService";
+import type { Page } from "../../services/informationService";
+
+export default function InformationList() {
+  const [articles, setArticles] = useState<Page[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(15); 
+  const [query, setQuery] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [status, setStatus] = useState("PUBLISHED");
+  const [loading, setLoading] = useState(false);
+
+  const loadArticles = async () => {
+    setLoading(true);
+    try {
+      const response = await getPages({ status, page, limit, query });
+      const { items, pagination } = response.data;
+      setArticles(items);
+      setTotalPages(pagination.totalPages || 1);
+    } catch (error) {
+      console.error("Erreur lors du chargement des articles :", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadArticles();
+  }, [page, status, query, limit]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPage(1);
+    setQuery(searchInput);
+  };
+
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPage(1);
+    setStatus(e.target.value);
+  };
+
+  const handleLimitChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLimit(Number(e.target.value));
+    setPage(1);
+  };
+
+  const handleDelete = async (id: number) => {
+    if (confirm("Supprimer cet article ?")) {
+      await deletePage(id);
+      loadArticles();
+    }
+  };
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-bold mb-6">
+          Liste des articles d'information
+        </h1>
+        <Link
+          to="/informations/create"
+          className="bg-green-500 text-white font-semibold py-2 px-4 rounded cursor-pointer"
+        >
+          + Créer un article
+        </Link>
+      </div>
+
+      <form
+        onSubmit={handleSearch}
+        className="flex items-center justify-between gap-4 mb-4"
+      >
+        <div className="flex items-center gap-4 w-full">
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Rechercher un article..."
+            className="border border-gray-300 p-2 rounded w-1/2"
+          />
+          <select
+            value={status}
+            onChange={handleStatusChange}
+            className="border border-gray-300 p-2 rounded"
+          >
+            <option value="PUBLISHED">Publié</option>
+            <option value="DRAFT">Brouillon</option>
+            <option value="HIDDEN">Caché</option>
+          </select>
+          <button
+            type="submit"
+            className="bg-green-500 text-white py-2 px-4 rounded"
+          >
+            Rechercher
+          </button>
+        </div>
+        <div className="flex items-center gap-2">
+          <label htmlFor="limit" className="text-sm whitespace-nowrap">
+            Lignes par page :
+          </label>
+          <select
+            id="limit"
+            value={limit}
+            onChange={handleLimitChange}
+            className="border border-gray-300 p-2 rounded"
+          >
+            {[10, 15, 20, 50].map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+      </form>
+
+      {loading ? (
+        <div className="text-center py-6">Chargement...</div>
+      ) : (
+        <>
+          <table className="w-full text-left border-collapse table-auto">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="border p-2">ID</th>
+                <th className="border p-2">Titre</th>
+                <th className="border p-2">Date de création</th>
+                <th className="border p-2">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {articles.length > 0 ? (
+                articles.map((article) => (
+                  <tr key={`${article.id}-${article.createdAt}`}>
+                    <td className="border p-2">{article.id}</td>
+                    <td className="border p-2">{article.title}</td>
+                    <td className="border p-2">
+                      {new Date(article.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="border p-2 gap-2">
+                      <Link
+                        to={`/informations/edit/${article.id}`}
+                        className="text-green-600 hover:underline"
+                      >
+                        Modifier
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(article.id)}
+                        className="text-red-600 hover:underline ml-2"
+                      >
+                        Supprimer
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={4} className="text-center py-4">
+                    Aucun article trouvé.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          <div className="flex items-center justify-between mt-6">
+            <button
+              onClick={() => setPage((p) => Math.max(p - 1, 1))}
+              disabled={page === 1}
+              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Précédent
+            </button>
+            <div>
+              Page {page} sur {totalPages}
+            </div>
+            <button
+              onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+              disabled={page === totalPages}
+              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Suivant
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
