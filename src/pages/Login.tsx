@@ -23,7 +23,7 @@ export default function Login() {
   
       const userLevel = user.role?.level ?? 0;
   
-      if (userLevel >= 80) {
+      if (userLevel >= 60) {
         login(user, access_token);
         navigate("/dashboard");
       } else {
