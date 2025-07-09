@@ -1,0 +1,79 @@
+name: "Construction du workflow de production"
+run-name: ${{github.actor}} A lancé le github workflow de production
+on: [push]
+
+# ------------------ CI ------------------
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v4      
+      
+      - name: Installation des dépendances
+        working-directory: .
+        run: npm i
+
+      - name: Lint
+        working-directory: .
+        run: npm run lint
+
+      - name: Compilation du projet
+        working-directory: .
+        run: npm run build
+
+      - name: Enregistrement du cache (node_modules)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.node_modules
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+
+  push-build-to-docker:
+    needs: 
+      - build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Connexion a DockerHub
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push de l'image Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/organisation-de-merge/backend-cesizen/backend:${{github.ref_name}}
+
+# ------------------ CD ------------------
+
+  deploy-docker-prod:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref_name == 'main' }}
+    environment: 
+      name: prod
+      url: http://ec2-54-225-54-84.compute-1.amazonaws.com/
+    needs: push-build-to-docker
+    steps: 
+      - name: Déploiement du conteneur Docker via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd cesizen-prod
+            cd backoffice-prod
+            sudo docker compose -f docker-compose.prod.yml pull
+            sudo docker compose -f docker-compose.prod.yml up -d
+  

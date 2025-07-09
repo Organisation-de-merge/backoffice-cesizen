@@ -11,7 +11,7 @@ export interface Page {
   updatedAt: string;
 }
 
-export const getPages = (params?: any) => api.get("/pages", { params });
+export const getPages = (params?: Page) => api.get("/pages", { params });
 
 export const getPage = (id: number) => api.get(`/pages/${id}`);
 

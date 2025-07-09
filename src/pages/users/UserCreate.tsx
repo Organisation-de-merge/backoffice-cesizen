@@ -3,12 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { createUser } from "../../services/userService";
 import { getRoles } from "../../services/roleService";
 
+interface Role {
+  id: number;
+  label: string;
+}
+
 export default function UserCreate() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [roleId, setRoleId] = useState<number>();
-  const [roles, setRoles] = useState<any[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {

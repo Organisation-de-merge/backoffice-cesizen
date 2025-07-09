@@ -3,13 +3,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getMenu, updateMenu } from "../../services/menuService";
 import { getPages } from "../../services/informationService";
 
+interface Page {
+  id: number;
+  title: string;
+}
+
 export default function MenuEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [label, setLabel] = useState("");
   const [pageIds, setPageIds] = useState<number[]>([]);
-  const [pages, setPages] = useState<any[]>([]);
+  const [pages, setPages] = useState<Page[]>([]);
 
   useEffect(() => {
     if (!id) return;

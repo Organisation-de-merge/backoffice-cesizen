@@ -4,13 +4,18 @@ import { getUser, updateUser } from "../../services/userService";
 import { getRoles } from "../../services/roleService";
 import { forgotPassword } from "../../services/authService"; 
 
+interface Role {
+  id: number;
+  label: string;
+}
+
 export default function UserEdit() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [roleId, setRoleId] = useState<number>();
-  const [roles, setRoles] = useState<any[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
   const [feedback, setFeedback] = useState<string | null>(null); 
 
   useEffect(() => {
