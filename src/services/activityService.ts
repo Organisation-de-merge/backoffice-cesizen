@@ -1,6 +1,6 @@
 import api from "./api";
 
-export interface ActivityQueryParams {
+export interface Activity {
   id: number;
   name: string;
   description: string;
@@ -12,7 +12,7 @@ export interface ActivityQueryParams {
   publicationDate?: string;
 }
 
-export const getActivities = (params?: ActivityQueryParams) => api.get("/activities", { params });
+export const getActivities = (params?: Activity) => api.get("/activities", { params });
 
 export const getActivity = (id: number) => api.get(`/activities/${id}`);
 
