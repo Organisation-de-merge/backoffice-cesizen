@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getActivities, deleteActivity } from "../../services/activityService";
-import type { Activity } from "../../services/activityService";
+import type { ActivityInterface } from "../../services/activityService";
 
 export default function ActivityList() {
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const [activities, setActivities] = useState<ActivityInterface[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit, setLimit] = useState(15);

@@ -1,18 +1,15 @@
 import api from "./api";
 
-export interface Activity {
-  id: number;
-  name: string;
-  description: string;
-  duration: number;
-  stressLevel: number;
-  typeId: number;
-  status: string;
-  thumbnail?: string;
-  publicationDate?: string;
+export interface ActivitiesInterface {
+  status?: string; 
+  page?: number;
+  limit?: number;
+  query?: string;
+  typeId?: number;
+  stressLevel?: number;
 }
 
-export const getActivities = (params?: Activity) => api.get("/activities", { params });
+export const getActivities = (params?: ActivitiesInterface) => api.get("/activities", { params });
 
 export const getActivity = (id: number) => api.get(`/activities/${id}`);
 

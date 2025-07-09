@@ -1,17 +1,13 @@
 import api from "./api";
 
-export interface Page {
-  id: number;
-  title: string;
-  content: string;
-  status: string;
-  thumbnail?: string;
-  publishedAt?: string;
-  createdAt: string;
-  updatedAt: string;
+export interface PagesInterface {
+  status?: string; 
+  page?: number;
+  limit?: number;
+  query?: string;
 }
 
-export const getPages = (params?: Page) => api.get("/pages", { params });
+export const getPages = (params?: PagesInterface) => api.get("/pages", { params });
 
 export const getPage = (id: number) => api.get(`/pages/${id}`);
 

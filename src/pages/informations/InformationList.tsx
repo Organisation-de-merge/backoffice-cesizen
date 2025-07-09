@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPages, deletePage } from "../../services/informationService";
-import type { Page } from "../../services/informationService";
+import type { PageInterface } from "../../services/informationService";
 
 export default function InformationList() {
-  const [articles, setArticles] = useState<Page[]>([]);
+  const [articles, setArticles] = useState<PageInterface[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit, setLimit] = useState(15); 
