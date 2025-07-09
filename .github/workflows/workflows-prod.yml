@@ -53,7 +53,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/organisation-de-merge/backend-cesizen/backend:${{github.ref_name}}
+          tags: ghcr.io/organisation-de-merge/backoffice-cesizen/backoffice:${{github.ref_name}}
 
 # ------------------ CD ------------------
 
