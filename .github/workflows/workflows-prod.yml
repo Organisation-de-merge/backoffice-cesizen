@@ -48,12 +48,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Echo pour debug
+        run: echo "VITE_API_URL=${{ secrets.VITE_API_URL }}"
+
       - name: Build and push de l'image Docker
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/organisation-de-merge/backoffice-cesizen/backoffice:${{github.ref_name}}
+          tags: ghcr.io/organisation-de-merge/backoffice-cesizen/backoffice:${{ github.ref_name }}
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
 
