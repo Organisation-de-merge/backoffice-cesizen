@@ -1,6 +1,6 @@
 import api from "./api";
 
-export interface Page {
+export interface InformationQueryParams {
   id: number;
   title: string;
   content: string;
@@ -11,7 +11,7 @@ export interface Page {
   updatedAt: string;
 }
 
-export const getPages = (params?: Page) => api.get("/pages", { params });
+export const getPages = (params?: InformationQueryParams) => api.get("/pages", { params });
 
 export const getPage = (id: number) => api.get(`/pages/${id}`);
 
