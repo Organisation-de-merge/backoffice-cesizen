@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Echo pour debug
-        run: echo "VITE_API_URL=${{ vars.VITE_API_URL }}"
+        run: echo "VITE_API_URL=http://ec2-54-225-54-84.compute-1.amazonaws.com:2323
 
       - name: Build and push de l'image Docker
         uses: docker/build-push-action@v6
