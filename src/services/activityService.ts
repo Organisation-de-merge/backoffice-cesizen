@@ -12,7 +12,7 @@ export interface Activity {
   publicationDate?: string;
 }
 
-export const getActivities = (params?: any) => api.get("/activities", { params });
+export const getActivities = (params?: Activity) => api.get("/activities", { params });
 
 export const getActivity = (id: number) => api.get(`/activities/${id}`);
 

@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 docker-compose.prod.yml
+<<<<<<< HEAD
+=======
+.env
+>>>>>>> develop
 
 # Editor directories and files
 .vscode/*
