@@ -54,6 +54,8 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/organisation-de-merge/backoffice-cesizen/backoffice:${{github.ref_name}}
+          build-args: |
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
 
 # ------------------ CD ------------------
 
