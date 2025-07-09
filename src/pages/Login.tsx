@@ -41,7 +41,7 @@ export default function Login() {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded shadow-md w-96"
       >
-        <h1 className="text-3xl font-bold mb-6">Connexion 2</h1>
+        <h1 className="text-3xl font-bold mb-6">Connexion</h1>
         <input
           type="email"
           placeholder="Email"
