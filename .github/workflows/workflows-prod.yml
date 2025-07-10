@@ -30,9 +30,35 @@ jobs:
             ~/.node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
 
-  push-build-to-docker:
+  unit-tests:
     needs: 
       - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Exécution des tests unitaires
+        working-directory: .
+        run: npm run test
+        continue-on-error: true
+
+  audit:
+    needs: 
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Exécution de l'audit de sécurité
+        working-directory: .
+        run: npm audit --audit-level=high
+        continue-on-error: true
+  push-build-to-docker:
+    needs: 
+      - unit-tests
+      - audit
     runs-on: ubuntu-latest
     permissions:
       contents: read
