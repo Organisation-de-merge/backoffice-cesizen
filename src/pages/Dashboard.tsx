@@ -63,7 +63,7 @@ export default function Dashboard() {
       minRole: 60,
     },
     {
-      label: "Utilisateurs",
+      label: "Utilisateurs Totaux",
       value: stats.users,
       color: "text-indigo-600",
       link: "/users",
